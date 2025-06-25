@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vorkath Spike Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1e1e1e;
+            color: #f0f0f0;
+            padding: 20px;
+            user-select: none;
+        }
+        button {
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            margin: 2px;
+            border: none;
+            border-radius: 6px;
+            background-color: #444;
+            color: white;
+            cursor: pointer;
+        }
+        .counter {
+            font-size: 24px;
+            display: inline-block;
+            width: 60px;
+            text-align: center;
+        }
+        .label {
+            display: inline-block;
+            width: 150px;
+            font-size: 18px;
+        }
+        .row {
+            margin-bottom: 10px;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 20px;
+        }
+        #calculate-btn, #reset-btn {
+            width: auto;
+            padding: 10px 20px;
+            margin-top: 10px;
+            background-color: #007acc;
+        }
+    </style>
+</head>
+<body>
+    <div class="row">
+        <span class="label">Hours Played:</span>
+        <button id="hours-dec">-</button>
+        <span id="hours-val" class="counter">0</span>
+        <button id="hours-inc">+</button>
+    </div>
+    <div class="row">
+        <span class="label">Spikes Obtained:</span>
+        <button id="spikes-dec">-</button>
+        <span id="spikes-val" class="counter">0</span>
+        <button id="spikes-inc">+</button>
+    </div>
+    <div class="row">
+        <button id="calculate-btn">Calculate Spikes/Hour</button>
+        <button id="reset-btn">Reset</button>
+    </div>
+    <div id="result"></div>
+
+    <script>
+        let hours = 0;
+        let spikes = 0;
+
+        const hoursVal = document.getElementById('hours-val');
+        const spikesVal = document.getElementById('spikes-val');
+        const resultDiv = document.getElementById('result');
+
+        function updateDisplay() {
+            hoursVal.textContent = hours;
+            spikesVal.textContent = spikes;
+        }
+
+        function calculate() {
+            if (hours === 0) {
+                resultDiv.textContent = 'You must track at least 1 hour.';
+                return;
+            }
+            let rate = spikes / hours;
+            resultDiv.textContent = `Spikes per hour: ${rate.toFixed(2)}`;
+        }
+
+        function reset() {
+            hours = 0;
+            spikes = 0;
+            resultDiv.textContent = '';
+            updateDisplay();
+        }
+
+        function holdIncrement(button, changeFunc) {
+            let timeoutId, intervalId;
+
+            button.addEventListener('mousedown', () => {
+                changeFunc();
+                timeoutId = setTimeout(() => {
+                    intervalId = setInterval(changeFunc, 100);
+                }, 400);
+            });
+
+            const stop = () => {
+                clearTimeout(timeoutId);
+                clearInterval(intervalId);
+            };
+
+            ['mouseup', 'mouseleave', 'mouseout'].forEach(evt =>
+                button.addEventListener(evt, stop)
+            );
+        }
+
+        function incHours() { hours++; updateDisplay(); }
+        function decHours() { if (hours > 0) hours--; updateDisplay(); }
+        function incSpikes() { spikes++; updateDisplay(); }
+        function decSpikes() { if (spikes > 0) spikes--; updateDisplay(); }
+
+        holdIncrement(document.getElementById('hours-inc'), incHours);
+        holdIncrement(document.getElementById('hours-dec'), decHours);
+        holdIncrement(document.getElementById('spikes-inc'), incSpikes);
+        holdIncrement(document.getElementById('spikes-dec'), decSpikes);
+
+        document.getElementById('calculate-btn').addEventListener('click', calculate);
+        document.getElementById('reset-btn').addEventListener('click', reset);
+
+        updateDisplay();
+    </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "Vorkath Spike Tracker",
+  "description": "Track your Vorkath spikes per hour",
+  "url": "index.html",
+  "icon": "",
+  "defaultwidth": 400,
+  "defaultheight": 300,
+  "resizeable": true
+}
